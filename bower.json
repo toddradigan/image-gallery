@@ -1,0 +1,12 @@
+{
+  "name": "Image Gallery",
+  "description": "simple polymer image gallery",
+  "homepage": "https://github.com/toddradigan/image-gallery",
+  "keywords": [
+  ],
+  "author": "Todd Radigan",
+  "dependencies": {
+		"iron-image": "PolymerElements/iron-image#^1.0",
+    "polymer": "Polymer/polymer#^1.0"
+  }
+}
