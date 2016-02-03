@@ -1,15 +1,42 @@
+<link rel='import' href='/bower_components/polymer/polymer.html'>
+
+<link rel='import' href='/bower_components/iron-image/iron-image.html'>
+
 <dom-module id='image-gallery'>
   <template>
     <style>
       :host {
         display: block;
+        margin: 0px;
+        padding: 8px;
+      }
+
+      iron-image {
+        height: 32vw;
+        width: 32vw;
       }
     </style>
+
+    <template is='dom-repeat' items='[[images]]' index-as='index'>
+      <iron-image src='[[item]]' preload fade sizing='cover' on-tap='_tap'></iron-image>
+    </template>
 
   </template>
   <script>
     Polymer({
-      is: 'image-gallery'
+      is: 'image-gallery',
+
+      properties: {
+        images: {
+          type: Array,
+          value: function() { return []; }
+        }
+      },
+
+      _tap: function(e, detail) {
+        console.log('index', e.model.index);
+        console.log('item', e.model.item);
+      }
     });
   </script>
 </dom-module>
