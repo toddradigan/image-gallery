@@ -34,8 +34,7 @@
       },
 
       _tap: function(e, detail) {
-        console.log('index', e.model.index);
-        console.log('item', e.model.item);
+        this.fire('image-selected', {index: e.model.index, item: e.model.item});
       }
     });
   </script>
