@@ -1,7 +1,9 @@
 <link rel='import' href='/bower_components/polymer/polymer.html'>
 
+<link rel='import' href='/bower_components/iron-icons/image-icons.html'>
 <link rel='import' href='/bower_components/iron-image/iron-image.html'>
 <link rel='import' href='/bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='/bower_components/paper-fab/paper-fab.html'>
 
 <dom-module id='image-gallery'>
   <template>
@@ -51,19 +53,28 @@
         width: 100vw;
       }
 
-      div.next {
+      div {
         position: absolute;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+
         height: 100vh;
         width: 25vw;
-        right: 0vw;
         z-index: 1;
       }
 
+      div.next {
+        right: 0vw;
+        align-items: flex-end;
+      }
+
       div.previous {
-        position: absolute;
-        height: 100vh;
-        width: 25vw;
-        z-index: 1;
+        align-items: flex-start;
+      }
+
+      div > paper-fab {
+        margin: 0px 10px;
       }
     </style>
 
@@ -74,8 +85,12 @@
         </template>
       </section>
       <section mode='image'>
-        <div class='previous' hidden$='[[_hidePrevious]]' on-tap='previous'></div>
-        <div class='next' hidden$='[[_hideNext]]' on-tap='next'></div>
+        <div class='previous' hidden$='[[_hidePrevious]]' on-tap='_divPrevious'>
+          <paper-fab hidden$='[[!showImageNav]]' icon='image:navigate-before' on-tap='previous'></paper-fab>
+        </div>
+        <div class='next' hidden$='[[_hideNext]]' on-tap='_divNext'>
+          <paper-fab hidden$='[[!showImageNav]]' icon='image:navigate-next' on-tap='next'></paper-fab>
+        </div>
         <iron-image id='view' src='' preload fade sizing='contain'></iron-image>
       </section>
     </iron-pages>
@@ -107,6 +122,10 @@
           value: -1,
           notify: true
         },
+        showImageNav: {
+          type: Boolean,
+          value: false
+        },
         wrap: {
           type: Boolean,
           value: false
@@ -119,6 +138,18 @@
 
       _computeHidePrevious: function(wrap, selected) {
         return (!wrap && (selected === 0));
+      },
+
+      _divNext: function() {
+        if (!this.showImageNav) {
+          this.next();
+        }
+      },
+
+      _divPrevious: function() {
+        if (!this.showImageNav) {
+          this.previous();
+        }
       },
 
       _tap: function(e, detail) {
