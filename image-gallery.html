@@ -77,6 +77,7 @@
 
       div > paper-fab {
         margin: 0px 10px;
+        @apply(--image-gallery-nav-button);
       }
 
       paper-icon-button {
@@ -115,11 +116,11 @@
       properties: {
         _hideNext: {
           type: Boolean,
-          computed: '_computeHideNext(wrap, selected)'
+          computed: '_computeHideNext(wrap, selectedIndex)'
         },
         _hidePrevious: {
           type: Boolean,
-          computed: '_computeHidePrevious(wrap, selected)'
+          computed: '_computeHidePrevious(wrap, selectedIndex)'
         },
         _mode: {
           type: String,
@@ -129,27 +130,29 @@
           type: Array,
           value: function() { return []; }
         },
-        selected: {
+        selectedIndex: {
           type: Number,
           value: -1,
           notify: true
         },
         showImageNav: {
           type: Boolean,
-          value: false
+          value: false,
+          reflectToAttribute: true
         },
         wrap: {
           type: Boolean,
-          value: false
+          value: false,
+          reflectToAttribute: true
         }
       },
 
-      _computeHideNext: function(wrap, selected) {
-        return (!wrap && (selected === (this.images.length - 1)));
+      _computeHideNext: function(wrap, selectedIndex) {
+        return (!wrap && (selectedIndex === (this.images.length - 1)));
       },
 
-      _computeHidePrevious: function(wrap, selected) {
-        return (!wrap && (selected === 0));
+      _computeHidePrevious: function(wrap, selectedIndex) {
+        return (!wrap && (selectedIndex === 0));
       },
 
       _divNext: function() {
@@ -170,33 +173,33 @@
       },
 
       back: function() {
-        this.selected = -1;
+        this.selectedIndex = -1;
         this._mode = 'grid';
       },
 
       next: function() {
-        if (this.selected >= 0 &&
-          (this.wrap || this.selected < this.images.length - 1)) {
+        if (this.selectedIndex >= 0 &&
+          (this.wrap || this.selectedIndex < this.images.length - 1)) {
 
           this.fire('view-next');
-          return this.show(this.selected === this.images.length - 1 ? 0 : this.selected + 1);
+          return this.show(this.selectedIndex === this.images.length - 1 ? 0 : this.selectedIndex + 1);
         }
         return false;
       },
 
       previous: function() {
-        if (this.selected < this.images.length &&
-          (this.wrap || this.selected > 0)) {
+        if (this.selectedIndex < this.images.length &&
+          (this.wrap || this.selectedIndex > 0)) {
 
           this.fire('view-previous');
-          return this.show(this.selected === 0 ? this.images.length - 1 : this.selected - 1);
+          return this.show(this.selectedIndex === 0 ? this.images.length - 1 : this.selectedIndex - 1);
         }
         return false;
       },
 
       show: function(index) {
         if (index >= 0 && index < this.images.length) {
-          this.selected = index;
+          this.selectedIndex = index;
           this.$.view.src = this.images[index];
           this._mode = 'image';
           return true;
