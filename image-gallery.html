@@ -177,6 +177,8 @@
       next: function() {
         if (this.selected >= 0 &&
           (this.wrap || this.selected < this.images.length - 1)) {
+
+          this.fire('view-next');
           return this.show(this.selected === this.images.length - 1 ? 0 : this.selected + 1);
         }
         return false;
@@ -185,6 +187,8 @@
       previous: function() {
         if (this.selected < this.images.length &&
           (this.wrap || this.selected > 0)) {
+
+          this.fire('view-previous');
           return this.show(this.selected === 0 ? this.images.length - 1 : this.selected - 1);
         }
         return false;
