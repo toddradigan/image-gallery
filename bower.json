@@ -6,8 +6,8 @@
   ],
   "author": "Todd Radigan",
   "dependencies": {
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0",
-		"iron-image": "PolymerElements/iron-image#^1.0",
-    "polymer": "Polymer/polymer#^1.0"
+		"iron-image": "PolymerElements/iron-image#^1.2",
+    "iron-pages": "PolymerElements/iron-pages#^1.0",
+    "polymer": "Polymer/polymer#^1.2"
   }
 }
