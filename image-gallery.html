@@ -4,6 +4,7 @@
 <link rel='import' href='/bower_components/iron-icons/iron-icons.html'>
 <link rel='import' href='/bower_components/iron-image/iron-image.html'>
 <link rel='import' href='/bower_components/iron-pages/iron-pages.html'>
+<link rel='import' href='/bower_components/iron-resizable-behavior/iron-resizable-behavior.html'>
 <link rel='import' href='/bower_components/paper-fab/paper-fab.html'>
 <link rel='import' href='/bower_components/paper-icon-button/paper-icon-button.html'>
 
@@ -24,35 +25,9 @@
         padding: 8px;
       }
 
-      iron-image {
-        height: calc(100vw - 11px);
-        width: calc(100vw - 11px);
-      }
-
-      @media (min-width: 300px) {
-        iron-image {
-          height: calc((100vw / 2) - 11px);
-          width: calc((100vw / 2) - 11px);
-        }
-      }
-
-      @media (min-width: 500px) {
-        iron-image {
-          height: calc((100vw / 3) - 9px);
-          width: calc((100vw / 3) - 9px);
-        }
-      }
-
-      @media (min-width: 700px) {
-        iron-image {
-          height: calc((100vw / 4) - 9px);
-          width: calc((100vw / 4) - 9px);
-        }
-      }
-
       #view {
-        height: 100vh;
-        width: 100vw;
+        height: 90vh;
+        width: 100%;
       }
 
       div {
@@ -93,7 +68,7 @@
     <iron-pages selected='{{_mode}}' attr-for-selected='mode'>
       <section class='pad' mode='grid'>
         <template is='dom-repeat' items='[[images]]' index-as='index'>
-          <iron-image src='[[item]]' preload fade sizing='cover' on-tap='_tap'></iron-image>
+          <iron-image style$='[[_computeStyle(_imageSize)]]' src='[[item]]' preload fade sizing='cover' on-tap='_tap'></iron-image>
         </template>
       </section>
       <section mode='image'>
@@ -113,6 +88,10 @@
     Polymer({
       is: 'image-gallery',
 
+      behaviors: [
+        Polymer.IronResizableBehavior
+      ],
+
       properties: {
         _hideNext: {
           type: Boolean,
@@ -121,6 +100,10 @@
         _hidePrevious: {
           type: Boolean,
           computed: '_computeHidePrevious(wrap, selectedIndex)'
+        },
+        _imageSize: {
+          type: Number,
+          value: 200
         },
         _mode: {
           type: String,
@@ -145,11 +128,31 @@
           value: false,
           reflectToAttribute: true
         },
+        targetImageSize: {
+          type: Number,
+          value: 200,
+          observer: '_targetSizeChanged'
+        },
         wrap: {
           type: Boolean,
           value: false,
           reflectToAttribute: true
         }
+      },
+
+      listeners: {
+        'iron-resize': '_onIronResize'
+      },
+
+      attached: function() {
+        this.async(this.notifyResize, 1);
+      },
+
+      get parent() {
+        if (this.parentNode.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+          return this.parentNode.host;
+        }
+        return this.parentNode;
       },
 
       _computeHideNext: function(wrap, selectedIndex) {
@@ -158,6 +161,11 @@
 
       _computeHidePrevious: function(wrap, selectedIndex) {
         return (!wrap && (selectedIndex === 0));
+      },
+
+      _computeStyle: function(_imageSize) {
+        var style = 'width: ' + _imageSize + 'px; height: ' + _imageSize + 'px;';
+        return style;
       },
 
       _divNext: function() {
@@ -172,9 +180,18 @@
         }
       },
 
+      _onIronResize: function() {
+        var imageCount = Math.max(Math.round((this.parent.offsetWidth - 16) / this.targetImageSize), 1);
+        this._imageSize = Math.floor((this.parent.offsetWidth - 16)/ imageCount) - 4;
+      },
+
       _tap: function(e, detail) {
         this.fire('image-selected', {index: e.model.index, item: e.model.item});
         this.show(e.model.index);
+      },
+
+      _targetSizeChanged: function(newValue) {
+        this.async(this.notifyResize, 1);
       },
 
       back: function() {
