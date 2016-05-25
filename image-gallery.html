@@ -68,7 +68,7 @@
     <iron-pages selected='{{_mode}}' attr-for-selected='mode'>
       <section class='pad' mode='grid'>
         <template is='dom-repeat' items='[[images]]' index-as='index'>
-          <iron-image style$='[[_computeStyle(_imageSize)]]' src='[[item]]' preload fade sizing='cover' on-tap='_tap'></iron-image>
+          <iron-image style$='[[_computeStyle(_imageSize)]]' src='[[item.url]]' preload fade sizing='cover' on-tap='_tap'></iron-image>
         </template>
       </section>
       <section mode='image'>
@@ -222,7 +222,7 @@
       show: function(index) {
         if (index >= 0 && index < this.images.length) {
           this.selectedIndex = index;
-          this.$.view.src = this.images[index];
+          this.$.view.src = this.images[index].url;
           this._mode = 'image';
           return true;
         }
